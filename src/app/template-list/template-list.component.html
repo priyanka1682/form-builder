@@ -1,0 +1,11 @@
+<h2>Templates</h2>
+<button (click)="create()">Create Template</button>
+<ul>
+  <li *ngFor="let t of (templates$ | async)">
+    {{t.name}}
+    <button (click)="edit(t.id)">Edit</button>
+    <button (click)="preview(t.id)">Preview</button>
+    <button (click)="fill(t.id)">Fill</button>
+    <button class="danger" (click)="remove(t.id)">Delete</button>
+  </li>
+</ul>

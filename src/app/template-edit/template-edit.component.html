@@ -1,0 +1,88 @@
+<h2>Form Builder</h2>
+
+<div class="builder-shell">
+  <!-- PALETTE -->
+  <section class="palette">
+    <h3>Field Palette</h3>
+
+    <div
+      cdkDropList
+      #paletteList="cdkDropList"
+      [cdkDropListData]="palette"
+      [cdkDropListConnectedTo]="[canvasList]"
+      class="palette-list"
+    >
+      <div class="chip" *ngFor="let f of palette" cdkDrag>{{ f.type }}</div>
+    </div>
+
+    <div class="add-buttons">
+      <button (click)="add('text')">+ Text</button>
+      <button (click)="add('textarea')">+ Textarea</button>
+      <button (click)="add('select')">+ Select</button>
+      <button (click)="add('checkbox')">+ Checkbox</button>
+      <button (click)="add('radio')">+ Radio</button>
+      <button (click)="add('date')">+ Date</button>
+    </div>
+  </section>
+
+  <!-- CANVAS -->
+  <section class="canvas">
+    <div class="header">
+      <label>Template name:</label>
+      <input [(ngModel)]="templateName" placeholder="Untitled form" />
+      <button (click)="save()">Save</button>
+      <button class="danger" *ngIf="templateId" (click)="delete()">Delete</button>
+    </div>
+
+    <h3>Canvas</h3>
+    <div
+      cdkDropList
+      #canvasList="cdkDropList"
+      [cdkDropListData]="fields"
+      [cdkDropListConnectedTo]="[paletteList]"
+      (cdkDropListDropped)="onDrop($event)"
+      class="canvas-list"
+    >
+      <div
+        class="field-row"
+        *ngFor="let f of fields; let i = index"
+        cdkDrag
+        (click)="select(i)"
+        [class.selected]="i === selectedIndex"
+      >
+        <span class="handle" cdkDragHandle>☰</span>
+        <span class="label">{{ f.type }} — {{ f.label || '(no label)' }}</span>
+        <button (click)="remove(i); $event.stopPropagation()">Remove</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROPERTIES -->
+  <section class="props" *ngIf="selected as s">
+    <h3>Field Properties</h3>
+    <div class="grid">
+      <label>Label</label>
+      <input [(ngModel)]="s.label" />
+
+      <label>Help text</label>
+      <input [(ngModel)]="s.helpText" />
+
+      <label>Required</label>
+      <input type="checkbox" [(ngModel)]="s.validation!.required" />
+
+      <label>Min length</label>
+      <input type="number" [(ngModel)]="s.validation!.minLength" />
+
+      <label>Max length</label>
+      <input type="number" [(ngModel)]="s.validation!.maxLength" />
+
+      <label>Pattern</label>
+      <input [(ngModel)]="s.validation!.pattern" placeholder="e.g. ^[A-Za-z]+$" />
+
+      <div *ngIf="hasOptions(s.type)" class="options">
+        <label>Options (comma separated)</label>
+        <input [(ngModel)]="optionsBuffer" (blur)="applyOptions()" placeholder="Red,Green,Blue" />
+      </div>
+    </div>
+  </section>
+</div>

@@ -1,0 +1,4 @@
+<h2>Submissions</h2>
+<ul>
+  <li *ngFor="let s of (submissions$ | async)">{{ s | json }}</li>
+</ul>

@@ -1,0 +1,14 @@
+.topbar { 
+    display:flex; 
+    gap:16px; 
+    padding:12px; 
+    border-bottom:1px solid #e5e5e5; 
+}
+
+.container { 
+    padding: 16px; 
+}
+
+a.active { 
+    font-weight: 700; 
+}

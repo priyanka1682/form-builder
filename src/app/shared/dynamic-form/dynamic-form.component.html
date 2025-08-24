@@ -1,0 +1,48 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <ng-container *ngIf="template as t">
+    <div class="field" *ngFor="let f of t.fields">
+      <label [attr.for]="f.id">{{ f.label || f.type }}</label>
+
+      <ng-container [ngSwitch]="f.type">
+        <input *ngSwitchCase="'text'" [id]="f.id" type="text" [formControlName]="f.id" [attr.placeholder]="f.helpText || ''"/>
+        <textarea *ngSwitchCase="'textarea'" [id]="f.id" [formControlName]="f.id" [attr.placeholder]="f.helpText || ''"></textarea>
+
+        <select *ngSwitchCase="'select'" [id]="f.id" [formControlName]="f.id">
+          <option value="">-- Select --</option>
+          <option *ngFor="let o of (f.options||[])" [value]="o">{{o}}</option>
+        </select>
+
+        <div *ngSwitchCase="'checkbox'">
+          <label *ngFor="let o of (f.options || [])">
+            <input
+              type="checkbox"
+              [checked]="(form.get(f.id)?.value || []).includes(o)"
+              (change)="onCheckboxToggle(f.id, o, $event.target?.checked)"
+            />
+             {{ o }}
+          </label>
+        </div>
+
+        <div *ngSwitchCase="'radio'">
+          <label *ngFor="let o of (f.options||[])">
+            <input type="radio" [name]="f.id" [value]="o" [formControlName]="f.id"/> {{o}}
+          </label>
+        </div>
+
+        <input *ngSwitchCase="'date'" [id]="f.id" type="date" [formControlName]="f.id"/>
+      </ng-container>
+
+      <small class="help" *ngIf="f.helpText">{{f.helpText}}</small>
+      <div class="error" *ngIf="form.get(f.id)?.touched && form.get(f.id)?.invalid">
+        <ng-container *ngIf="form.get(f.id)?.errors as e">
+          <span *ngIf="e['required']">This field is required.</span>
+          <span *ngIf="e['minlength']">Minimum length is {{f.validation?.minLength}}.</span>
+          <span *ngIf="e['maxlength']">Maximum length is {{f.validation?.maxLength}}.</span>
+          <span *ngIf="e['pattern']">Value does not match pattern.</span>
+        </ng-container>
+      </div>
+    </div>
+
+    <button *ngIf="!readOnly" type="submit">Submit</button>
+  </ng-container>
+</form>
